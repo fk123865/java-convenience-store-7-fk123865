@@ -24,8 +24,8 @@ public enum Items {
         this.price = price;
     }
 
-    public String totalPrice(int orderQuantity) {
-        return NumberFormat.getInstance().format((long) orderQuantity * price);
+    public int totalPrice(int orderQuantity) {
+        return orderQuantity * price;
     }
 
     public String getName() {

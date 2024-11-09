@@ -4,6 +4,7 @@ import store.domain.Items;
 import store.domain.util.Formatting;
 import store.domain.util.ItemsMap;
 
+import java.text.NumberFormat;
 import java.util.Map;
 
 import static store.domain.util.Formatting.*;
@@ -19,9 +20,14 @@ public class OrderReceipt {
         for (String orderProduct : order.keySet()) {
             String ItemName = items.get(orderProduct);
             Items item = Items.valueOf(ItemName);
-            String receipt = String.format(String.valueOf(FORMATTING), orderProduct, order.get(orderProduct), item.totalPrice(order.get(orderProduct)));
+            int totalPrice = item.totalPrice(order.get(orderProduct));
+            String receipt = String.format(String.valueOf(FORMATTING), orderProduct, order.get(orderProduct), formatting(totalPrice));
             sb.append(receipt);
         }
         return sb.toString();
+    }
+
+    private static String formatting(int totalPrice) {
+        return NumberFormat.getInstance().format(totalPrice);
     }
 }
