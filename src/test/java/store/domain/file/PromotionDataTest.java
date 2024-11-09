@@ -3,7 +3,7 @@ package store.domain.file;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import store.domain.Promotion;
-import store.file.PromotionData;
+import store.domain.util.file.PromotionData;
 
 import java.io.FileNotFoundException;
 import java.util.Map;
