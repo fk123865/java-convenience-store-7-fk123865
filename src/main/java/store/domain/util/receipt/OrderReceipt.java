@@ -11,10 +11,9 @@ import static store.domain.util.Formatting.*;
 
 public class OrderReceipt {
 
-    private OrderReceipt(){}
-
-    public static String create(Map<String, Integer> order){
+    public String create(Map<String, Integer> order){
         StringBuilder sb = new StringBuilder();
+        sb.append(String.format(String.valueOf(FORMATTING), "상품명", "수량", "금액"));
         Map<String, String> items = ItemsMap.create();
 
         for (String orderProduct : order.keySet()) {
@@ -27,7 +26,7 @@ public class OrderReceipt {
         return sb.toString();
     }
 
-    private static String formatting(int totalPrice) {
+    private String formatting(int totalPrice) {
         return NumberFormat.getInstance().format(totalPrice);
     }
 }
