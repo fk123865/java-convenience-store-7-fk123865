@@ -4,8 +4,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import store.domain.Product;
 import store.domain.Promotion;
-import store.file.ProductData;
-import store.file.PromotionData;
+import store.domain.util.file.ProductData;
+import store.domain.util.file.PromotionData;
 
 import java.io.FileNotFoundException;
 import java.util.List;
