@@ -18,7 +18,7 @@ public class CreateReceipt {
         sb.append("==============W 편의점================\n");
         sb.append(orderReceipt.create(order));
         if (!giftProduct.isEmpty()) {
-            sb.append("=============증\t정===============\n");
+            sb.append("=============증\t\t정===============\n");
             sb.append(giftReceipt.create(giftProduct));
         }
         sb.append("====================================\n");
