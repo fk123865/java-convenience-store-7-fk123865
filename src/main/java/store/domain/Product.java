@@ -40,6 +40,15 @@ public class Product {
 
     public void promotionAvailableForBuy(String productName, int orderQuantity,
                                          Map<String, Integer> giftProducts, Map<String, Integer> order) {
+        if (this.quantity == orderQuantity) {
+            int giftCount = promotion.giftCount(orderQuantity);
+            if (giftCount > 0) {
+                giftProducts.put(productName, giftCount);
+            }
+            this.quantity -= orderQuantity;
+            return;
+        }
+
         if (promotion.checkGift(orderQuantity)) {
             String answer = addProduct(productName);
             if (answer.equals("n")) {
