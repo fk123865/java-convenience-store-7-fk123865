@@ -22,11 +22,28 @@ public class Promotion {
         return now.isAfter(startDate) && now.isBefore(endDate);
     }
 
-    public int checkGift(int buy) {
-        if (this.buy > buy) {
-            return 0;
+    public boolean checkGift(int buy) {
+        return buy == this.buy || buy % (this.buy + this.get) == this.buy;
+    }
+
+    public int giftCount(int orderQuantity) {
+        int giftCount = 0;
+        while (orderQuantity > this.buy) {
+            giftCount += get;
+            orderQuantity -= (this.buy + this.get);
         }
-        return buy / this.buy;
+        return giftCount;
+    }
+
+    public boolean minBuy(int orderQuantity) {
+        return orderQuantity >= this.buy;
+    }
+
+    public int remainCount(int orderQuantity) {
+        while (orderQuantity > this.buy) {
+            orderQuantity -= (this.buy + this.get);
+        }
+        return orderQuantity;
     }
 
     public String getName() {
