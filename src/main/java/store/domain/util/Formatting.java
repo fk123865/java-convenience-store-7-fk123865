@@ -2,7 +2,8 @@ package store.domain.util;
 
 public enum Formatting {
 
-    FORMATTING("%s              %d          %s\n");
+    // todo 위치 포맷팅 하기
+    FORMATTING("%-15s  %-7s %-15s\n");
 
     private final String format;
 
