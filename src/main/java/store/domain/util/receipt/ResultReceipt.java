@@ -15,9 +15,7 @@ public class ResultReceipt {
     public String create(Map<String, Integer> giftProduct, int totalQuantity, int totalPrice, int generalTotalPrice) {
         StringBuilder sb = new StringBuilder();
         sb.append(createString(totalQuantity, totalPrice));
-        if (!giftProduct.isEmpty()) {
-            sb.append(createString(giftProduct));
-        }
+        sb.append(createString(giftProduct));
         sb.append(createString(generalTotalPrice));
         sb.append(createGoodSumOfMoney(totalPrice));
         return sb.toString();
@@ -30,6 +28,9 @@ public class ResultReceipt {
     private String createString(Map<String, Integer> giftProduct) {
         int discount = EventDiscount.discount(giftProduct);
         totalDiscount -= discount;
+        if (giftProduct.isEmpty()) {
+            discount = 0;
+        }
         return formatting("행사할인", "", discount, true);
     }
 
