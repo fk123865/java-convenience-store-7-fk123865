@@ -2,7 +2,7 @@ package store.error;
 
 public enum Error {
 
-    ERROR("[ERROR]");
+    ERROR("[ERROR] ");
 
     private final String message;
 
