@@ -2,10 +2,6 @@ package store.domain;
 
 import camp.nextstep.edu.missionutils.DateTimes;
 import store.domain.util.receipt.CreateReceipt;
-import store.error.Error;
-import store.error.ErrorMessage;
-import store.view.InputView;
-import store.view.OutputView;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -19,16 +15,16 @@ public class InventoryManagement {
 
     private final List<Product> products;
     private final Map<String, Integer> order;
-    private final Map<String, Product> promotionProduct;
-    private final Map<String, Product> generalProduct;
+    private final Map<String, Product> promotionProducts;
+    private final Map<String, Product> generalProducts;
     private final Map<String, Integer> giftProduct;
     private int generalTotalPrice = 0;
 
     public InventoryManagement(List<Product> products,  Map<String, Integer> order) {
         this.products = products;
         this.order = order;
-        promotionProduct = splitPromotion();
-        generalProduct = splitGeneral();
+        promotionProducts = splitPromotion();
+        generalProducts = splitGeneral();
         giftProduct = new HashMap<>();
     }
 
@@ -54,11 +50,11 @@ public class InventoryManagement {
 
     public void calculate() {
         for (String orderProduct : order.keySet()) {
-            if (promotionProduct.containsKey(orderProduct)) {
+            if (promotionProducts.containsKey(orderProduct)) {
                 promotionCalculate(orderProduct, order.get(orderProduct));
                 continue;
             }
-            if (generalProduct.containsKey(orderProduct)) {
+            if (generalProducts.containsKey(orderProduct)) {
                 generalCalculate(orderProduct, order.get(orderProduct));
                 continue;
             }
@@ -67,7 +63,7 @@ public class InventoryManagement {
     }
 
     private void promotionCalculate(String productName, int orderQuantity) {
-        Product product = promotionProduct.get(productName);
+        Product product = promotionProducts.get(productName);
         LocalDate now = DateTimes.now().toLocalDate();
         if (product.checkDate(now)) {
             if (product.paymentAvailable(orderQuantity)) { // 프로모션 재고로만 가능할 때
@@ -75,19 +71,28 @@ public class InventoryManagement {
                 return;
             }
             // 프로모션 재고로만 불가능할 때
-            int count = product.nonPaymentCount(productName, orderQuantity, giftProduct, order);
-            if (count == 0){
-                return;
-            }
-            generalCalculate(productName, count);
+            extracted(productName, orderQuantity, product);
             return;
         }
         // 프로모션 기간이 아닐 땐 바로 일반 재고로 넘긴다.
         generalCalculate(productName, orderQuantity);
     }
 
+    private void extracted(String productName, int orderQuantity, Product product) {
+        Product promotionProduct = promotionProducts.get(productName);
+        Product generalProduct = generalProducts.get(productName);
+        if (promotionProduct.getQuantity() + generalProduct.getQuantity() < orderQuantity) {
+            throw new IllegalArgumentException(ERROR.toString() + IS_EXCESS_QUANTITY);
+        }
+        int count = product.nonPaymentCount(productName, orderQuantity, giftProduct, order);
+        if (count == 0){
+            return;
+        }
+        generalCalculate(productName, count);
+    }
+
     private void generalCalculate(String productName, int orderQuantity) {
-        Product product = generalProduct.get(productName);
+        Product product = generalProducts.get(productName);
         if (product.paymentAvailable(orderQuantity)) {
             generalTotalPrice += product.generalAvailableForBuy(productName, orderQuantity);
             return;

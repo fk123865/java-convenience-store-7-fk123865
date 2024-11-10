@@ -80,9 +80,8 @@ public class Product {
             return orderQuantity;
         }
 
-        int remainQuantity = orderQuantity - this.quantity; // 10 - 7 = 3
-        int useQuantity = orderQuantity - remainQuantity; // 10 - 3 = 7
-        this.quantity -= useQuantity; // 7 - 7 = 0;
+        int remainQuantity = orderQuantity - this.quantity; // 12- 1 = 11
+        int useQuantity = orderQuantity - remainQuantity; // 12 - 11 = 1
         // 일단 이거는 입력이 y 또는 n 이든 둘 다 실행해야되는 것
         int giftCount = promotion.giftCount(useQuantity);
         giftProducts.put(productName, giftCount);
@@ -94,8 +93,10 @@ public class Product {
             order.put(productName, useQuantity);
         }
         if (input.equals("y")) {
+            this.quantity -= useQuantity;
             return remainQuantity;
         }
+        this.quantity -= useQuantity;
         return 0;
     }
 
@@ -122,6 +123,10 @@ public class Product {
 
     public String getName() {
         return name;
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 
     public String writeString() {
