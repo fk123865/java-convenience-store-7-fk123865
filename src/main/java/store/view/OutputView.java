@@ -14,22 +14,12 @@ public class OutputView {
         System.out.println();
     }
 
-    public void printOrderReceipt(String orderReceipt) {
-        System.out.println("==============W 편의점================");
-        System.out.println(orderReceipt);
-    }
-
-    public void printGiftReceipt(String giftReceipt) {
-        System.out.println("=============증\t정===============");
-        System.out.println(giftReceipt);
-    }
-
-    public void printResultReceipt(String resultReceipt) {
-        System.out.println("====================================");
-        System.out.println(resultReceipt);
+    public void printOrderReceipt(String receipt) {
+        System.out.println(receipt);
     }
 
     public void printExceptionMessage(String message) {
-        System.out.println(message);
+        System.out.print(message);
+        System.out.println(" 다시 입력해 주세요.");
     }
 }
