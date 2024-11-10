@@ -84,9 +84,13 @@ public class Product {
         int useQuantity = orderQuantity - remainQuantity; // 12 - 11 = 1
         // 일단 이거는 입력이 y 또는 n 이든 둘 다 실행해야되는 것
         int giftCount = promotion.giftCount(useQuantity);
-        giftProducts.put(productName, giftCount);
-
-        int remainCount = promotion.remainCount(useQuantity);
+        if (giftCount != 0) {
+            giftProducts.put(productName, giftCount);
+        }
+        int remainCount = 0;
+        if (useQuantity != 1) {
+             remainCount = promotion.remainCount(useQuantity);
+        }
         int generalCount = remainCount + remainQuantity;
         String input = sendGeneralProduct(productName, generalCount);
         if (input.equals("n")) {
