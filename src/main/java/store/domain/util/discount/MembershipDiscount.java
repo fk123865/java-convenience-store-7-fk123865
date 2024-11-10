@@ -14,6 +14,9 @@ public class MembershipDiscount {
             return 0;
         }
         double discountPrice = totalPrice * 0.3;
+        if (discountPrice > 8000) {
+            discountPrice = 8000.0;
+        }
         return (int) discountPrice;
     }
 
