@@ -19,7 +19,7 @@ public class Promotion {
     }
 
     public boolean checkData(LocalDate now) {
-        return startDate.isAfter(now) && endDate.isBefore(now) || startDate.isEqual(now) || endDate.isEqual(now);
+        return startDate.isBefore(now) && endDate.isAfter(now) || startDate.isEqual(now) || endDate.isEqual(now);
     }
 
     public boolean checkGift(int buy) {
