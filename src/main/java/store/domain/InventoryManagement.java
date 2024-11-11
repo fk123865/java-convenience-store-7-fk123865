@@ -66,19 +66,17 @@ public class InventoryManagement {
         Product product = promotionProducts.get(productName);
         LocalDate now = DateTimes.now().toLocalDate();
         if (product.checkDate(now)) {
-            if (product.paymentAvailable(orderQuantity)) { // 프로모션 재고로만 가능할 때
+            if (product.paymentAvailable(orderQuantity)) {
                 product.promotionAvailableForBuy(productName, orderQuantity, giftProduct, order);
                 return;
             }
-            // 프로모션 재고로만 불가능할 때
-            extracted(productName, orderQuantity, product);
+            outOfStock(productName, orderQuantity, product);
             return;
         }
-        // 프로모션 기간이 아닐 땐 바로 일반 재고로 넘긴다.
         generalCalculate(productName, orderQuantity);
     }
 
-    private void extracted(String productName, int orderQuantity, Product product) {
+    private void outOfStock(String productName, int orderQuantity, Product product) {
         Product promotionProduct = promotionProducts.get(productName);
         Product generalProduct = generalProducts.get(productName);
         if (promotionProduct.getQuantity() + generalProduct.getQuantity() < orderQuantity) {
