@@ -20,34 +20,22 @@ public class StoreController {
 
     public void run() {
         while (true) {
-            Store store = execute();
+            Store store = init();
+            execute(store);
             if (retry().equals("n")) {
-//                store.returnProduct();
                 return;
             }
         }
     }
 
-    private String retry() {
-        while (true) {
-            try {
-                String userInput = input.readRetry();
-                return YesOrNoValidator.validate(userInput);
-            } catch (IllegalArgumentException e) {
-                output.printExceptionMessage(e.getMessage());
-            }
-        }
-    }
-
-    private Store execute() {
-        Store store = init();
+    private void execute(Store store) {
         output.printProducts(store.getProducts());
         while (true) {
             try {
                 store.sendOrder(input.readOrder());
-                String result = store.calculateTotal();
-                output.printOrderReceipt(result);
-                return store;
+                String receipt = store.calculateTotal();
+                output.printOrderReceipt(receipt);
+                return;
             } catch (IllegalArgumentException e) {
                 output.printExceptionMessage(e.getMessage());
             }
@@ -59,6 +47,17 @@ public class StoreController {
             return new Store();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private String retry() {
+        while (true) {
+            try {
+                String userInput = input.readRetry();
+                return YesOrNoValidator.validate(userInput);
+            } catch (IllegalArgumentException e) {
+                output.printExceptionMessage(e.getMessage());
+            }
         }
     }
 }

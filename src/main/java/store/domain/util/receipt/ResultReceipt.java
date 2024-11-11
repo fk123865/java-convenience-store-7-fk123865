@@ -14,11 +14,15 @@ public class ResultReceipt {
 
     public String create(Map<String, Integer> giftProduct, int totalQuantity, int totalPrice, int generalTotalPrice) {
         StringBuilder sb = new StringBuilder();
+        appendReceipt(giftProduct, totalQuantity, totalPrice, generalTotalPrice, sb);
+        return sb.toString();
+    }
+
+    private void appendReceipt(Map<String, Integer> giftProduct, int totalQuantity, int totalPrice, int generalTotalPrice, StringBuilder sb) {
         sb.append(createString(totalQuantity, totalPrice));
         sb.append(createString(giftProduct));
         sb.append(createString(generalTotalPrice));
         sb.append(createGoodSumOfMoney(totalPrice));
-        return sb.toString();
     }
 
     private String createString(int totalQuantity, int totalPrice) {

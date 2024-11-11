@@ -19,6 +19,6 @@ public class ProductDataTest {
 
         List<Product> products = ProductData.create("src/main/resources/products.md", promotionData);
 
-        Assertions.assertThat(products).hasSize(16);
+        Assertions.assertThat(products).hasSize(18);
     }
 }

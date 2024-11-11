@@ -39,19 +39,6 @@ public class Store {
         return inventory.writeReceipt();
     }
 
-    public void returnProduct() {
-        try {
-            products = ProductData.create("src/main/resources/temp.md", promotions);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            WriteProductData.write(products, "src/main/resources/products.md");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public List<Product> getProducts() {
         return products;
     }

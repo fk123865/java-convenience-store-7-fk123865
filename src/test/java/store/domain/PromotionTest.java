@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import store.domain.Promotion;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,7 +16,7 @@ public class PromotionTest {
     void checkDateTest() {
         Promotion promotion = setUp();
 
-        boolean result = promotion.checkData(LocalDate.of(2024,1,31));
+        boolean result = promotion.checkData(LocalDateTime.of(2024,1,31,0,0));
 
         assertThat(result).isTrue();
     }
@@ -54,8 +55,8 @@ public class PromotionTest {
         String name = "탄산2+1";
         int buy = 2;
         int get = 1;
-        LocalDate startDate = LocalDate.of(2024, 1, 1);
-        LocalDate endDate = LocalDate.of(2024, 12, 31);
+        LocalDateTime startDate = LocalDateTime.of(2024, 1, 1,0,0);
+        LocalDateTime endDate = LocalDateTime.of(2024, 12, 31,0,0);
         return new Promotion(name, buy, get, startDate, endDate);
     }
 }

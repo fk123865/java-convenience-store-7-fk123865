@@ -4,6 +4,7 @@ import camp.nextstep.edu.missionutils.DateTimes;
 import store.domain.util.receipt.CreateReceipt;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,7 @@ public class InventoryManagement {
 
     private void promotionCalculate(String productName, int orderQuantity) {
         Product product = promotionProducts.get(productName);
-        LocalDate now = DateTimes.now().toLocalDate();
+        LocalDateTime now = DateTimes.now();
         if (product.checkDate(now)) {
             if (product.paymentAvailable(orderQuantity)) {
                 product.promotionAvailableForBuy(productName, orderQuantity, giftProduct, order);

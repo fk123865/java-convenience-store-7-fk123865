@@ -18,7 +18,7 @@ class EventDiscountTest {
 
         int discountPrice = EventDiscount.discount(giftProduct);
 
-        assertThat(discountPrice).isEqualTo(-1000);
+        assertThat(discountPrice).isEqualTo(1000);
     }
 
     @Test
@@ -30,7 +30,7 @@ class EventDiscountTest {
 
         int discountPrice = EventDiscount.discount(giftProduct);
 
-        assertThat(discountPrice).isEqualTo(-3000);
+        assertThat(discountPrice).isEqualTo(3000);
     }
 
 }

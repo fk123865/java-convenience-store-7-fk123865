@@ -7,7 +7,7 @@ import store.view.OutputView;
 
 import java.text.NumberFormat;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 
@@ -34,7 +34,7 @@ public class Product {
         String product = items.get(productName);
         Items item = Items.valueOf(product);
 
-        this.quantity -= orderQuantity;
+        deductQuantity(orderQuantity);
         return item.totalPrice(orderQuantity);
     }
 
@@ -44,31 +44,33 @@ public class Product {
             sameQuantity(productName, orderQuantity, giftProducts);
             return;
         }
-
         if (promotion.checkGift(orderQuantity)) {
             String answer = addProduct(productName);
             if (answer.equals("n")) {
-                this.quantity -= orderQuantity;
+                deductQuantity(orderQuantity);
                 return;
             }
-            if (answer.equals("y")) {
-                order.put(productName, order.get(productName) + 1);
-                orderQuantity += 1;
-            }
+            order.put(productName, order.get(productName) + 1);
+            orderQuantity += 1;
         }
-        int giftCount = promotion.giftCount(orderQuantity);
-        if (promotion.minBuy(orderQuantity) ) {
-            giftProducts.put(productName, giftCount);
-        }
-        this.quantity -= orderQuantity;
+        deductQuantity(orderQuantity);
+        addGiftProduct(productName, orderQuantity, giftProducts);
     }
 
+    // todo 메서드 10줄 이하로 줄이기
     private void sameQuantity(String productName, int orderQuantity, Map<String, Integer> giftProducts) {
         int giftCount = promotion.giftCount(orderQuantity);
         if (giftCount > 0) {
             giftProducts.put(productName, giftCount);
         }
-        this.quantity -= orderQuantity;
+        deductQuantity(orderQuantity);
+    }
+
+    private void addGiftProduct(String productName, int orderQuantity, Map<String, Integer> giftProducts) {
+        int giftCount = promotion.giftCount(orderQuantity);
+        if (promotion.minBuy(orderQuantity) ) {
+            giftProducts.put(productName, giftCount);
+        }
     }
 
     public String addProduct(String productName) {
@@ -86,17 +88,11 @@ public class Product {
     public int nonPaymentCount(String productName, int orderQuantity,
                                Map<String, Integer> giftProducts, Map<String, Integer> order) {
         if (this.quantity == 0) {
-            String input = sendGeneralProduct(productName, orderQuantity);
-            if (input.equals("n")) {
-                order.put(productName, 0);
-                return 0;
-            }
-            return orderQuantity;
+            return promotionQuantityIsNotting(productName, orderQuantity, order);
         }
 
-        int remainQuantity = orderQuantity - this.quantity; // 12- 1 = 11
-        int useQuantity = orderQuantity - remainQuantity; // 12 - 11 = 1
-        // 일단 이거는 입력이 y 또는 n 이든 둘 다 실행해야되는 것
+        int remainQuantity = orderQuantity - this.quantity; 
+        int useQuantity = orderQuantity - remainQuantity; 
         int giftCount = promotion.giftCount(useQuantity);
         if (giftCount != 0) {
             giftProducts.put(productName, giftCount);
@@ -111,11 +107,20 @@ public class Product {
             order.put(productName, useQuantity);
         }
         if (input.equals("y")) {
-            this.quantity -= useQuantity;
+            deductQuantity(useQuantity);
             return remainQuantity;
         }
-        this.quantity -= useQuantity;
+        deductQuantity(useQuantity);
         return 0;
+    }
+
+    private int promotionQuantityIsNotting(String productName, int orderQuantity, Map<String, Integer> order) {
+        String input = sendGeneralProduct(productName, orderQuantity);
+        if (input.equals("n")) {
+            order.put(productName, 0);
+            return 0;
+        }
+        return orderQuantity;
     }
 
     private String sendGeneralProduct(String productName, int generalCount) {
@@ -131,7 +136,11 @@ public class Product {
         }
     }
 
-    public boolean checkDate(LocalDate now) {
+    private void deductQuantity(int orderQuantity) {
+        this.quantity -= orderQuantity;
+    }
+
+    public boolean checkDate(LocalDateTime now) {
         return promotion.checkData(now);
     }
 
@@ -158,15 +167,25 @@ public class Product {
     @Override
     public String toString() {
         String promotionName = "";
+        promotionName = hasPromotion(promotionName);
+        String quantity = hasQuantity();
+        return "- " + name + " " +
+                NumberFormat.getNumberInstance().format(price) + "원 " +
+                quantity + " " + promotionName;
+    }
+
+    private String hasPromotion(String promotionName) {
         if (promotion != null) {
             promotionName = promotion.getName();
         }
+        return promotionName;
+    }
+
+    private String hasQuantity() {
         String quantity = this.quantity + "개";
         if (quantity.equals("0개")) {
             quantity = "재고 없음";
         }
-        return "- " + name + " " +
-                NumberFormat.getNumberInstance().format(price) + "원 " +
-                quantity + " " + promotionName;
+        return quantity;
     }
 }

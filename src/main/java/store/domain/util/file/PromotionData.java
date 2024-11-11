@@ -5,6 +5,7 @@ import store.domain.Promotion;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class PromotionData {
@@ -47,13 +48,13 @@ public class PromotionData {
         String name = materials[0];
         int buy = Integer.parseInt(materials[1]);
         int get = Integer.parseInt(materials[2]);
-        LocalDate startDate = parseDate(materials[3]);
-        LocalDate endDate = parseDate(materials[4]);
+        LocalDateTime startDate = parseDate(materials[3]);
+        LocalDateTime endDate = parseDate(materials[4]);
         return new Promotion(name, buy, get, startDate, endDate);
     }
 
-    private static LocalDate parseDate(String materials) {
+    private static LocalDateTime parseDate(String materials) {
         String[] dates = materials.split(DATE_DELIMITER);
-        return LocalDate.of(Integer.parseInt(dates[0]), Integer.parseInt(dates[1]), Integer.parseInt(dates[2]));
+        return LocalDateTime.of(Integer.parseInt(dates[0]), Integer.parseInt(dates[1]), Integer.parseInt(dates[2]), 0,0);
     }
 }

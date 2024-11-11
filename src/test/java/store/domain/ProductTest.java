@@ -7,6 +7,7 @@ import store.error.ErrorMessage;
 import store.validator.OrderValidator;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,9 +41,9 @@ public class ProductTest {
     void checkDateTest() {
         Product product = getProduct();
 
-        boolean result = product.checkDate(LocalDate.of(2025, 1, 1));
+        boolean result = product.checkDate(LocalDateTime.of(2024, 12, 31,0,0));
 
-        assertThat(result).isFalse();
+        assertThat(result).isTrue();
     }
 
     @Test

@@ -18,14 +18,14 @@ class YesOrNoValidatorTest {
     void validateTest1() {
         String input = "yn";
 
-        assertExceptionTest(input, IS_NOT_OWN_LENGTH);
+        assertExceptionTest(input);
     }
 
     @DisplayName("알파벳이 아니면 예외를 발생시킨다.")
     @ParameterizedTest
     @ValueSource(strings = {"1", "?", "가"})
     void validateTest2(String input) {
-        assertExceptionTest(input, IS_NOT_ALPHABET);
+        assertExceptionTest(input);
     }
 
     @Test
@@ -33,12 +33,12 @@ class YesOrNoValidatorTest {
     void validateTest3() {
         String input = "a";
 
-        assertExceptionTest(input, IS_NOT_YES_OR_NO);
+        assertExceptionTest(input);
     }
-    void assertExceptionTest(String input, ErrorMessage message) {
+    void assertExceptionTest(String input) {
         assertThatThrownBy(() -> YesOrNoValidator.validate(input))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining(message.toString());
+                .hasMessageContaining(IS_INVALID_INPUT.toString());
     }
 
 }
