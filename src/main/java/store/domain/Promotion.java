@@ -23,8 +23,8 @@ public class Promotion {
         return startDate.isBefore(now) && endDate.isAfter(now) || startDate.isEqual(now) || endDate.isEqual(now);
     }
 
-    public boolean checkGift(int buy) {
-        return buy == this.buy || buy % (this.buy + this.get) == this.buy;
+    public boolean checkGift(int orderQuantity) {
+        return orderQuantity == this.buy || orderQuantity % (this.buy + this.get) == this.buy;
     }
 
     public int giftCount(int orderQuantity) {

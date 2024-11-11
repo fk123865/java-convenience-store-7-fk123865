@@ -78,9 +78,8 @@ public class InventoryManagement {
     }
 
     private void outOfStock(String productName, int orderQuantity, Product product) {
-        Product promotionProduct = promotionProducts.get(productName);
-        Product generalProduct = generalProducts.get(productName);
-        if (promotionProduct.getQuantity() + generalProduct.getQuantity() < orderQuantity) {
+        int totalQuantity = getTotalQuantity(productName);
+        if (totalQuantity < orderQuantity) {
             throw new IllegalArgumentException(ERROR.toString() + IS_EXCESS_QUANTITY);
         }
         int count = product.nonPaymentCount(productName, orderQuantity, giftProduct, order);
@@ -88,6 +87,12 @@ public class InventoryManagement {
             return;
         }
         generalCalculate(productName, count);
+    }
+
+    private int getTotalQuantity(String productName){
+        Product promotionProduct = promotionProducts.get(productName);
+        Product generalProduct = generalProducts.get(productName);
+        return promotionProduct.getQuantity() + generalProduct.getQuantity();
     }
 
     private void generalCalculate(String productName, int orderQuantity) {
