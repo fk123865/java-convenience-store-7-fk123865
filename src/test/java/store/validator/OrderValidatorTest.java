@@ -37,7 +37,7 @@ public class OrderValidatorTest {
     @DisplayName("주문 갯수가 숫자가 아니면 예외가 발생한다.")
     @ValueSource(strings = {"[콜라-?]","[ - ]", "[콜라-a]", "[콜라-가]"})
     void orderExceptionTest2(String input) {
-        assertExceptionTest(input, ErrorMessage.IS_INVALID_INPUT);
+        assertExceptionTest(input, ErrorMessage.IS_INCORRECT_FORM);
     }
 
     void assertOrderTest(String input, int size) {
