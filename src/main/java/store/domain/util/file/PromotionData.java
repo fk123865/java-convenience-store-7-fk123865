@@ -48,13 +48,22 @@ public class PromotionData {
         String name = materials[0];
         int buy = Integer.parseInt(materials[1]);
         int get = Integer.parseInt(materials[2]);
-        LocalDateTime startDate = parseDate(materials[3]);
-        LocalDateTime endDate = parseDate(materials[4]);
+        LocalDateTime startDate = startDate(materials[3]);
+        LocalDateTime endDate = endDate(materials[4]);
         return new Promotion(name, buy, get, startDate, endDate);
     }
 
-    private static LocalDateTime parseDate(String materials) {
-        String[] dates = materials.split(DATE_DELIMITER);
-        return LocalDateTime.of(Integer.parseInt(dates[0]), Integer.parseInt(dates[1]), Integer.parseInt(dates[2]), 0,0);
+    private static LocalDateTime startDate(String materials) {
+        String[] dates = parseDate(materials);
+        return LocalDateTime.of(Integer.parseInt(dates[0]), Integer.parseInt(dates[1]), Integer.parseInt(dates[2]), 0,0,0);
+    }
+
+    private static LocalDateTime endDate(String materials) {
+        String[] dates = parseDate(materials);
+        return LocalDateTime.of(Integer.parseInt(dates[0]), Integer.parseInt(dates[1]), Integer.parseInt(dates[2]), 23,59,59);
+    }
+
+    private static String[] parseDate(String materials){
+        return materials.split(DATE_DELIMITER);
     }
 }
