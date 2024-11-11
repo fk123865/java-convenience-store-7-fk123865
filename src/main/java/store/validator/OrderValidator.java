@@ -69,7 +69,7 @@ public class OrderValidator {
             try {
                 order.put(items[0].trim(), Integer.parseInt(items[1].trim()));
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException(ERROR.toString() + IS_INVALID_INPUT);
+                throw new IllegalArgumentException(ERROR.toString() + IS_INCORRECT_FORM);
             }
         }
         return order;
