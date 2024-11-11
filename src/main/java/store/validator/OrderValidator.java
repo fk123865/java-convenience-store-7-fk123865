@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import static store.error.Error.ERROR;
-import static store.error.ErrorMessage.IS_INCORRECT_FORM;
-import static store.error.ErrorMessage.IS_NOT_NUMBER;
+import static store.error.ErrorMessage.*;
 
 public class OrderValidator {
 
@@ -70,7 +69,7 @@ public class OrderValidator {
             try {
                 order.put(items[0].trim(), Integer.parseInt(items[1].trim()));
             } catch (NumberFormatException e) {
-                throw new IllegalArgumentException(ERROR.toString() + IS_NOT_NUMBER);
+                throw new IllegalArgumentException(ERROR.toString() + IS_INVALID_INPUT);
             }
         }
         return order;

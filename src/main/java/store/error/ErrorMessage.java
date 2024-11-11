@@ -7,7 +7,8 @@ public enum ErrorMessage {
     IS_DOESNT_EXIST("존재하지 않는 상품입니다."),
     IS_NOT_ALPHABET("알파벳만 입력할 수 있습니다."),
     IS_NOT_OWN_LENGTH("입력은 한 글자여야 합니다."),
-    IS_NOT_YES_OR_NO("입력은 y 또는 n 이여야 합니다.");
+    IS_NOT_YES_OR_NO("입력은 y 또는 n 이여야 합니다."),
+    IS_INVALID_INPUT("잘못된 입력입니다.");
 
     private String message;
 

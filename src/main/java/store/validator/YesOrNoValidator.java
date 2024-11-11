@@ -6,23 +6,27 @@ import static store.error.ErrorMessage.*;
 public class YesOrNoValidator {
 
     private static final String NOT_ALPHABET = "[^a-zA-Z]";
-
+    private static final int INPUT_LENGTH = 1;
     private YesOrNoValidator() {
     }
 
-    public static String validate(String userInput) throws IllegalArgumentException {
+    public static String validate(String userInput) {
         String input = removeBlank(userInput);
-        if (input.length() > 1) {
-            throw new IllegalArgumentException(ERROR.toString() + IS_NOT_OWN_LENGTH);
+        incorrectFormat(input);
+        String inputToLowerCase = input.toLowerCase();
+        if (inputToLowerCase.equals("y") || inputToLowerCase.equals("n")) {
+            return inputToLowerCase;
+        }
+        throw new IllegalArgumentException(ERROR.toString() + IS_INVALID_INPUT);
+    }
+
+    private static void incorrectFormat(String input) {
+        if (input.length() > INPUT_LENGTH) {
+            throw new IllegalArgumentException(ERROR.toString() + IS_INVALID_INPUT);
         }
         if (input.matches(NOT_ALPHABET)) {
-            throw new IllegalArgumentException(ERROR.toString() + IS_NOT_ALPHABET);
+            throw new IllegalArgumentException(ERROR.toString() + IS_INVALID_INPUT);
         }
-        String inputLowerCase = input.toLowerCase();
-        if (inputLowerCase.equals("y") || inputLowerCase.equals("n")) {
-            return inputLowerCase;
-        }
-        throw new IllegalArgumentException(ERROR.toString() + IS_NOT_YES_OR_NO);
     }
 
     private static String removeBlank(String input) {
