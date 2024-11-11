@@ -2,6 +2,9 @@ package store.domain;
 
 import camp.nextstep.edu.missionutils.DateTimes;
 import store.domain.util.receipt.CreateReceipt;
+import store.validator.YesOrNoValidator;
+import store.view.InputView;
+import store.view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -105,6 +108,27 @@ public class InventoryManagement {
     }
 
     public String writeReceipt() {
-        return CreateReceipt.create(order,giftProduct, generalTotalPrice);
+        int totalPrice = hopeMembershipDiscount();
+        return CreateReceipt.create(order,giftProduct, totalPrice);
+    }
+
+    private int hopeMembershipDiscount() {
+        String input = membershipInput();
+        if (input.equals("n")) {
+            return 0;
+        }
+        return generalTotalPrice;
+    }
+
+    private String membershipInput() {
+        while (true) {
+            try {
+                InputView input = new InputView();
+                return YesOrNoValidator.validate(input.readMembership());
+            } catch (IllegalArgumentException e) {
+                OutputView output = new OutputView();
+                output.printExceptionMessage(e.getMessage());
+            }
+        }
     }
 }
