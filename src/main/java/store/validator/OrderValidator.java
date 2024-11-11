@@ -66,12 +66,24 @@ public class OrderValidator {
         Map<String, Integer> order = new LinkedHashMap<>();
         for (String orders : input.split(ORDER_DELIMITER)) {
             String[] items = orders.replace(ITEM_START, REMOVE).replace(ITEM_END, REMOVE).split(ITEM_DELIMITER);
-            try {
-                order.put(items[0].trim(), Integer.parseInt(items[1].trim()));
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException(ERROR.toString() + IS_INCORRECT_FORM);
-            }
+            putOrder(order, items);
         }
         return order;
+    }
+
+    private static void putOrder(Map<String, Integer> order, String[] items) {
+        try {
+            int orderQuantity = Integer.parseInt(items[1].trim());
+            checkPositive(orderQuantity);
+            order.put(items[0].trim(), orderQuantity);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(ERROR.toString() + IS_INCORRECT_FORM);
+        }
+    }
+
+    private static void checkPositive(int orderQuantity) {
+        if (orderQuantity <= 0) {
+            throw new IllegalArgumentException(ERROR.toString() + IS_INCORRECT_FORM);
+        }
     }
 }
