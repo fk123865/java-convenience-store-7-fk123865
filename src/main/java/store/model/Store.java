@@ -15,12 +15,11 @@ import java.util.Map;
 
 public class Store {
 
-    private List<Product> products;
-    private final Map<String, Promotion> promotions;
+    private final List<Product> products;
     private Map<String, Integer> order;
 
     public Store() throws FileNotFoundException {
-        promotions = PromotionData.create("src/main/resources/promotions.md");
+        Map<String, Promotion> promotions = PromotionData.create("src/main/resources/promotions.md");
         products = ProductData.create("src/main/resources/products.md", promotions);
     }
 

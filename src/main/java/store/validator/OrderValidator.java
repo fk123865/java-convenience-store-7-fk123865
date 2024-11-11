@@ -40,12 +40,17 @@ public class OrderValidator {
             if (hasNotSpecialCharacter(string, specialCharacterOrder)) {
                 continue;
             }
-            validateFormatting(string, metCount, specialCharacterOrder);
-            metCount++;
-            if (metCount == specialCharacterOrder.size()) {
-                metCount = 0;
-            }
+            metCount = metSpecialCharacter(string, metCount, specialCharacterOrder);
         }
+    }
+
+    private static int metSpecialCharacter(String string, int metCount, List<String> specialCharacterOrder) {
+        validateFormatting(string, metCount, specialCharacterOrder);
+        metCount++;
+        if (metCount == specialCharacterOrder.size()) {
+            metCount = 0;
+        }
+        return metCount;
     }
 
     private static boolean hasNotSpecialCharacter(String string, List<String> specialCharacterOrder) {

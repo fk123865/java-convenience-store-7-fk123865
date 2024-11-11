@@ -6,7 +6,6 @@ import store.validator.YesOrNoValidator;
 import store.view.InputView;
 import store.view.OutputView;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -85,7 +84,7 @@ public class InventoryManagement {
         if (totalQuantity < orderQuantity) {
             throw new IllegalArgumentException(ERROR.toString() + IS_EXCESS_QUANTITY);
         }
-        int count = product.nonPaymentCount(productName, orderQuantity, giftProduct, order);
+        int count = product.processNonPayment(productName, orderQuantity, giftProduct, order);
         if (count == 0){
             return;
         }
@@ -107,20 +106,15 @@ public class InventoryManagement {
         throw new IllegalArgumentException(ERROR.toString() + IS_EXCESS_QUANTITY);
     }
 
-    public String writeReceipt() {
-        int totalPrice = hopeMembershipDiscount();
-        return CreateReceipt.create(order,giftProduct, totalPrice);
-    }
-
     private int hopeMembershipDiscount() {
-        String input = membershipInput();
-        if (input.equals("n")) {
+        String request = membershipApproval();
+        if (request.equals("n")) {
             return 0;
         }
         return generalTotalPrice;
     }
 
-    private String membershipInput() {
+    private String membershipApproval() {
         while (true) {
             try {
                 InputView input = new InputView();
@@ -130,5 +124,10 @@ public class InventoryManagement {
                 output.printExceptionMessage(e.getMessage());
             }
         }
+    }
+
+    public String writeReceipt() {
+        int totalPrice = hopeMembershipDiscount();
+        return CreateReceipt.create(order,giftProduct, totalPrice);
     }
 }

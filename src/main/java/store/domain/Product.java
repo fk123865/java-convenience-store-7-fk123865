@@ -28,15 +28,6 @@ public class Product {
         return this.quantity >= orderQuantity;
     }
 
-    public int generalAvailableForBuy(String productName, int orderQuantity) {
-        Map<String, String> items = ItemsMap.create();
-        String product = items.get(productName);
-        Items item = Items.valueOf(product);
-
-        deductQuantity(orderQuantity);
-        return item.totalPrice(orderQuantity);
-    }
-
     public void promotionAvailableForBuy(String productName, int orderQuantity,
                                          Map<String, Integer> giftProducts, Map<String, Integer> order) {
         if (this.quantity == orderQuantity) {
@@ -52,8 +43,25 @@ public class Product {
         addGiftProduct(productName, orderQuantity, giftProducts);
     }
 
-    // todo 메서드 10줄 이하로 줄이기
-    public String addProduct(String productName) {
+    private void sameQuantity(String productName, int orderQuantity, Map<String, Integer> giftProducts) {
+        int giftCount = promotion.giftCount(orderQuantity);
+        if (giftCount > 0) {
+            giftProducts.put(productName, giftCount);
+        }
+        deductQuantity(orderQuantity);
+    }
+
+    private int addGift(String productName, int orderQuantity, Map<String, Integer> order) {
+        String request = requestAddProduct(productName);
+        if (request.equals("y")) {
+            order.put(productName, order.get(productName) + 1);
+            return orderQuantity + 1;
+        }
+        deductQuantity(orderQuantity);
+        return 0;
+    }
+
+    public String requestAddProduct(String productName) {
         while (true) {
             try {
                 InputView inputView = new InputView();
@@ -65,24 +73,6 @@ public class Product {
         }
     }
 
-    private int addGift(String productName, int orderQuantity, Map<String, Integer> order) {
-        String answer = addProduct(productName);
-        if (answer.equals("y")) {
-            order.put(productName, order.get(productName) + 1);
-            return orderQuantity + 1;
-        }
-        deductQuantity(orderQuantity);
-        return 0;
-    }
-
-    private void sameQuantity(String productName, int orderQuantity, Map<String, Integer> giftProducts) {
-        int giftCount = promotion.giftCount(orderQuantity);
-        if (giftCount > 0) {
-            giftProducts.put(productName, giftCount);
-        }
-        deductQuantity(orderQuantity);
-    }
-
     private void addGiftProduct(String productName, int orderQuantity, Map<String, Integer> giftProducts) {
         int giftCount = promotion.giftCount(orderQuantity);
         if (promotion.minBuy(orderQuantity) ) {
@@ -90,53 +80,71 @@ public class Product {
         }
     }
 
-    // 프로모션 상품의 재고와 일반 상품의 재고를 함께 사용하는 메서드
-    // 여기서 먼저 프로모션 상품의 재로를 사용한다.
-    // 여기서 0을 리턴한다는 것은 일반 상품의 재고를 사용하지 않겠다는 의미.
-    public int nonPaymentCount(String productName, int orderQuantity,
-                               Map<String, Integer> giftProducts, Map<String, Integer> order) {
+    public int generalAvailableForBuy(String productName, int orderQuantity) {
+        Map<String, String> items = ItemsMap.create();
+        String product = items.get(productName);
+        Items item = Items.valueOf(product);
+
+        deductQuantity(orderQuantity);
+        return item.totalPrice(orderQuantity);
+    }
+
+    public int processNonPayment(String productName, int orderQuantity,
+                                 Map<String, Integer> giftProducts, Map<String, Integer> order) {
         if (this.quantity == 0) {
             return promotionQuantityIsNotting(productName, orderQuantity, order);
         }
-        int remainQuantity = orderQuantity - this.quantity;
-        int useQuantity = orderQuantity - remainQuantity; 
-        int giftCount = promotion.giftCount(useQuantity);
-        putGiftProduct(productName, giftProducts, giftCount);
-        int remainCount = 0;
-        remainCount = getRemainCount(useQuantity, remainCount);
-        int generalCount = remainCount + remainQuantity;
-        String input = sendGeneralProduct(productName, generalCount);
-        if (input.equals("n")) {
-            order.put(productName, useQuantity);
+        updateGiftProducts(productName, giftProducts, this.quantity);
+        String request = requestStockApproval(productName, giftProducts, calculateRemainQuantity(orderQuantity));
+        if (request.equals("y")) {
+            return transferRemainQuantity(orderQuantity);
         }
-        if (input.equals("y")) {
-            deductQuantity(useQuantity);
-            return remainQuantity;
-        }
-        deductQuantity(useQuantity);
+        updateOrderWithPromotionStock(productName, order);
         return 0;
     }
 
-    private static void putGiftProduct(String productName, Map<String, Integer> giftProducts, int giftCount) {
+    private int promotionQuantityIsNotting(String productName, int orderQuantity, Map<String, Integer> order) {
+        String request = sendGeneralProduct(productName, orderQuantity);
+        if (request.equals("n")) {
+            order.put(productName, 0);
+            return 0;
+        }
+        return orderQuantity;
+    }
+
+    private  void updateGiftProducts(String productName, Map<String, Integer> giftProducts, int useQuantity) {
+        int giftCount = this.promotion.giftCount(useQuantity);
         if (giftCount != 0) {
             giftProducts.put(productName, giftCount);
         }
     }
 
-    private int getRemainCount(int useQuantity, int remainCount) {
-        if (useQuantity != 1 && useQuantity != 2) {
-             remainCount = promotion.remainCount(useQuantity);
-        }
-        return remainCount;
+    private String requestStockApproval(String productName, Map<String, Integer> giftProducts, int remainQuantity) {
+        int generalCount = getRemainCount(this.quantity) + remainQuantity;
+        return sendGeneralProduct(productName, generalCount);
     }
 
-    private int promotionQuantityIsNotting(String productName, int orderQuantity, Map<String, Integer> order) {
-        String input = sendGeneralProduct(productName, orderQuantity);
-        if (input.equals("n")) {
-            order.put(productName, 0);
-            return 0;
+    private int calculateRemainQuantity(int orderQuantity) {
+        return orderQuantity - this.quantity;
+    }
+
+    private int transferRemainQuantity(int orderQuantity) {
+        int useQuantity =  orderQuantity - this.quantity;
+        this.quantity = 0;
+        return useQuantity;
+    }
+
+    private void updateOrderWithPromotionStock(String productName, Map<String, Integer> order) {
+        order.put(productName, this.quantity);
+        this.quantity = 0;
+    }
+
+    private int getRemainCount(int useQuantity) {
+        int remainCount = 0;
+        if (useQuantity != 1 && useQuantity != 2) {
+            remainCount = promotion.remainCount(useQuantity);
         }
-        return orderQuantity;
+        return remainCount;
     }
 
     private String sendGeneralProduct(String productName, int generalCount) {
